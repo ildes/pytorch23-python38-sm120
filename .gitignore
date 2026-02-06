@@ -1,0 +1,20 @@
+# Build artifacts
+*.pyc
+__pycache__/
+*.egg-info/
+build/
+dist/
+
+# Don't ignore wheels - they're the deliverable
+# wheels/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.whl
