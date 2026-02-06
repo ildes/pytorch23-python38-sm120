@@ -1,8 +1,8 @@
-# PyTorch 2.3 for SM_120 (Blackwell) + Python 3.8
+# PyTorch 2.3 + Torchvision 0.18 for SM_120 (Blackwell) + Python 3.8
 
 > **Auto-generated repository** - Created with Claude Code
 
-Pre-built PyTorch wheel targeting **SM_120 only** (RTX 5080/5090 Blackwell architecture) with Python 3.8 support.
+Pre-built PyTorch and Torchvision wheels targeting **SM_120 only** (RTX 5080/5090 Blackwell architecture) with Python 3.8 support.
 
 ## Why This Exists
 
@@ -11,22 +11,29 @@ Pre-built PyTorch wheel targeting **SM_120 only** (RTX 5080/5090 Blackwell archi
 ## Quick Install
 
 ```bash
-# Download wheel from releases
+# Download wheels from releases
 wget https://github.com/ildes/pytorch23-python38-sm120/releases/download/v2.3.0-sm120-cu128/torch-2.3.0a0_sm120_cu128-cp38-cp38-linux_x86_64.whl
+wget https://github.com/ildes/pytorch23-python38-sm120/releases/download/v2.3.0-sm120-cu128/torchvision-0.18.1a0_sm120_cu128-cp38-cp38-linux_x86_64.whl
 
-# Install
+# Install (PyTorch first)
 pip install torch-2.3.0a0_sm120_cu128-cp38-cp38-linux_x86_64.whl
+pip install torchvision-0.18.1a0_sm120_cu128-cp38-cp38-linux_x86_64.whl
 ```
 
 Verify:
 ```bash
 python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name(0))"
+python -c "import torchvision; print(torchvision.__version__)"
 ```
 
 ## Build from Source
 
 ```bash
+# PyTorch (requires patches)
 ./scripts/build_pytorch.sh
+
+# Torchvision (no patches needed, but requires PyTorch installed first)
+./scripts/build_torchvision.sh
 ```
 
 | Variable | Default | Description |
@@ -34,9 +41,9 @@ python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_
 | `BUILD_DIR` | `~/pytorch-build-sm120` | Build location |
 | `NUM_JOBS` | `$(nproc)` | Parallel jobs |
 
-**Build time:** ~3 hours on 32-thread server
+**Build time:** ~3 hours PyTorch + ~20 min Torchvision on 32-thread server
 
-## Patches Applied
+## PyTorch Patches Applied
 
 | File | Change |
 |------|--------|
@@ -44,6 +51,8 @@ python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_
 | `cmake/.../select_compute_arch.cmake` | Default unknown arch to SM_120 |
 | `aten/.../CuFFTUtils.h` | Guard removed cuFFT error codes with `#ifdef` |
 | `caffe2/utils/string_utils.cc` | Add missing `<cstdint>` include |
+
+**Torchvision:** No patches required - builds cleanly against patched PyTorch.
 
 ## Build Configuration
 
@@ -64,7 +73,7 @@ NVCC flags: `-Xfatbin -compress-all -allow-unsupported-compiler`
 
 ## Requirements
 
-**Pre-built wheel:**
+**Pre-built wheels:**
 - Linux x86_64, Python 3.8, CUDA 12.x runtime, Driver 550+
 
 **Building from source:**
@@ -74,6 +83,7 @@ NVCC flags: `-Xfatbin -compress-all -allow-unsupported-compiler`
 
 - CUDA 12.8
 - PyTorch commit `63d5e92`
+- Torchvision commit `126fc22`
 - Python 3.8
 
 ## License
